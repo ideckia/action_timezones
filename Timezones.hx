@@ -10,10 +10,13 @@ typedef Props = {
 	var timezonesList:Array<String>;
 }
 
+@:name('timezones')
 class Timezones extends IdeckiaAction {
 	var timezoneIndex = 0;
 
-	override public function init(initialState:ItemState) {}
+	override public function init(initialState:ItemState):js.lib.Promise<ItemState> {
+		return execute(initialState);
+	}
 
 	public function execute(currentState:ItemState):js.lib.Promise<ItemState> {
 		return new js.lib.Promise((resolve, reject) -> {
