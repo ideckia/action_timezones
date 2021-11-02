@@ -36,7 +36,7 @@ class Timezones extends IdeckiaAction {
 		var currentTimezone = Timezone.get(currentTimezoneName);
 
 		if (currentTimezone == null) {
-			server.log('Could not found $currentTimezoneName in timezones DB.');
+			server.log.error('Could not found $currentTimezoneName in timezones DB.');
 			currentState.text = 'Not found\n$currentTimezoneName';
 		} else {
 			var tzTime = currentTimezone.at(DateTime.now());
