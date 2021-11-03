@@ -6,8 +6,14 @@ import datetime.DateTime;
 using api.IdeckiaApi;
 
 typedef Props = {
-	@:editable("IANA timezones list (from https://en.wikipedia.org/wiki/List_of_tz_database_time_zones)", ["Etc/UTC"])
-	var timezonesList:Array<String>;
+	@:editable("A list with a name you want to see in the item and the [IANA timezone ID](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones) to show the time.",
+		[
+			{
+				name: "utc",
+				ianaId: "Etc/UTC"
+			}
+		])
+	var timezonesList:Array<{name:String, ianaId:String}>;
 }
 
 @:name('timezones')
@@ -32,15 +38,15 @@ class Timezones extends IdeckiaAction {
 	}
 
 	function applyCurrentTimezone(currentState:ItemState) {
-		var currentTimezoneName = props.timezonesList[timezoneIndex];
-		var currentTimezone = Timezone.get(currentTimezoneName);
+		var currentElement = props.timezonesList[timezoneIndex];
+		var currentTimezone = Timezone.get(currentElement.ianaId);
 
 		if (currentTimezone == null) {
-			server.log.error('Could not found $currentTimezoneName in timezones DB.');
-			currentState.text = 'Not found\n$currentTimezoneName';
+			server.log.error('Could not found ${currentElement.ianaId} in timezones DB.');
+			currentState.text = 'Not found\n${currentElement.ianaId}';
 		} else {
 			var tzTime = currentTimezone.at(DateTime.now());
-			currentState.text = '$currentTimezoneName\n${tzTime.format('%R')}';
+			currentState.text = '${currentElement.name}\n${tzTime.format('%R')}';
 		}
 
 		return currentState;
