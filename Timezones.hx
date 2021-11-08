@@ -14,6 +14,8 @@ typedef Props = {
 			}
 		])
 	var timezonesList:Array<{name:String, ianaId:String}>;
+	@:editable("Update interval in minutes", 15)
+	var updateInterval:UInt;
 }
 
 @:name('timezones')
@@ -21,23 +23,37 @@ class Timezones extends IdeckiaAction {
 	var timezoneIndex = 0;
 
 	override public function init(initialState:ItemState):js.lib.Promise<ItemState> {
+		if (props.timezonesList.length == 0)
+			timezoneIndex = -1;
+
+		var timer = new haxe.Timer(props.updateInterval * 60 * 1000);
+		timer.run = function() {
+			applyCurrentTimezone(initialState, server.updateClientState, server.log.error);
+		};
+
 		return execute(initialState);
 	}
 
 	public function execute(currentState:ItemState):js.lib.Promise<ItemState> {
 		return new js.lib.Promise((resolve, reject) -> {
-			resolve(applyCurrentTimezone(currentState));
+			if (timezoneIndex == -1)
+				reject('No timezones defined');
+
+			applyCurrentTimezone(currentState, resolve, reject);
 		});
 	}
 
 	override public function onLongPress(currentState:ItemState):js.lib.Promise<ItemState> {
 		return new js.lib.Promise((resolve, reject) -> {
+			if (timezoneIndex == -1)
+				reject('No timezones defined');
+
 			timezoneIndex = (timezoneIndex + 1) % props.timezonesList.length;
-			resolve(applyCurrentTimezone(currentState));
+			applyCurrentTimezone(currentState, resolve, reject);
 		});
 	}
 
-	function applyCurrentTimezone(currentState:ItemState) {
+	function applyCurrentTimezone(currentState:ItemState, resolve:ItemState->Void, reject:Any->Void) {
 		var currentElement = props.timezonesList[timezoneIndex];
 		var currentTimezone = Timezone.get(currentElement.ianaId);
 
@@ -49,6 +65,6 @@ class Timezones extends IdeckiaAction {
 			currentState.text = '${currentElement.name}\n${tzTime.format('%R')}';
 		}
 
-		return currentState;
+		resolve(currentState);
 	}
 }
