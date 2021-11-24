@@ -19,6 +19,7 @@ typedef Props = {
 }
 
 @:name('timezones')
+@:description('Show the time in the configurated timezones.')
 class Timezones extends IdeckiaAction {
 	var timezoneIndex = 0;
 
