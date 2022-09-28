@@ -11,8 +11,8 @@ Shows the timezone times defined in the array (one at a time) in the item.
 
 | Name | Type | Default | Description | Possible values |
 | ----- |----- | ----- | ----- | ----- |
-| updateInterval | UInt | 15 | Update interval in minutes | null |
-| timezonesList | Array&lt;{ name : String, ianaId : String }&gt; | [{ name : "utc", ianaId : "Etc/UTC" }] | A list with a name you want to see in the item and the [IANA timezone ID](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones) to show the time. | null |
+| update_interval | UInt | 15 | Update interval in minutes | null |
+| timezones_list | Array&lt;{ name : String, iana_id : String }&gt; | [{ name : "utc", iana_id : "Etc/UTC" }] | A list with a name you want to see in the item and the [IANA timezone ID](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones) to show the time. | null |
 
 ## Example in layout file
 
@@ -24,11 +24,11 @@ Shows the timezone times defined in the array (one at a time) in the item.
         {
             "name": "timezones",
             "props": {
-                "updateInterval": 15,
-                "timezonesList": [
+                "update_interval": 15,
+                "timezones_list": [
                     {
                         "name" : "utc",
-                        "ianaId" : "Etc/UTC"
+                        "iana_id" : "Etc/UTC"
                     }
                 ]
             }

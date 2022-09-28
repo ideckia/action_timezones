@@ -10,12 +10,12 @@ typedef Props = {
 		[
 			{
 				name: "utc",
-				ianaId: "Etc/UTC"
+				iana_id: "Etc/UTC"
 			}
 		])
-	var timezonesList:Array<{name:String, ianaId:String}>;
+	var timezones_list:Array<{name:String, iana_id:String}>;
 	@:editable("Update interval in minutes", 15)
-	var updateInterval:UInt;
+	var update_interval:UInt;
 }
 
 @:name('timezones')
@@ -24,10 +24,10 @@ class Timezones extends IdeckiaAction {
 	var timezoneIndex = 0;
 
 	override public function init(initialState:ItemState):js.lib.Promise<ItemState> {
-		if (props.timezonesList.length == 0)
+		if (props.timezones_list.length == 0)
 			timezoneIndex = -1;
 
-		var timer = new haxe.Timer(props.updateInterval * 60 * 1000);
+		var timer = new haxe.Timer(props.update_interval * 60 * 1000);
 		timer.run = function() {
 			applyCurrentTimezone(initialState, server.updateClientState, server.log.error);
 		};
@@ -49,18 +49,18 @@ class Timezones extends IdeckiaAction {
 			if (timezoneIndex == -1)
 				reject('No timezones defined');
 
-			timezoneIndex = (timezoneIndex + 1) % props.timezonesList.length;
+			timezoneIndex = (timezoneIndex + 1) % props.timezones_list.length;
 			applyCurrentTimezone(currentState, resolve, reject);
 		});
 	}
 
 	function applyCurrentTimezone(currentState:ItemState, resolve:ItemState->Void, reject:Any->Void) {
-		var currentElement = props.timezonesList[timezoneIndex];
-		var currentTimezone = Timezone.get(currentElement.ianaId);
+		var currentElement = props.timezones_list[timezoneIndex];
+		var currentTimezone = Timezone.get(currentElement.iana_id);
 
 		if (currentTimezone == null) {
-			server.log.error('Could not found ${currentElement.ianaId} in timezones DB.');
-			currentState.text = 'Not found\n${currentElement.ianaId}';
+			server.log.error('Could not found ${currentElement.iana_id} in timezones DB.');
+			currentState.text = 'Not found\n${currentElement.iana_id}';
 		} else {
 			var tzTime = currentTimezone.at(DateTime.now());
 			currentState.text = '${currentElement.name}\n${tzTime.format('%R')}';
