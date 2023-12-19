@@ -22,35 +22,51 @@ typedef Props = {
 @:description('Show the time in the configurated timezones.')
 class Timezones extends IdeckiaAction {
 	var timezoneIndex = 0;
+	var timer:haxe.Timer;
 
 	override public function init(initialState:ItemState):js.lib.Promise<ItemState> {
-		if (props.timezones_list.length == 0)
-			timezoneIndex = -1;
-
-		var timer = new haxe.Timer(props.update_interval * 60 * 1000);
-		timer.run = function() {
-			applyCurrentTimezone(initialState, server.updateClientState, server.log.error);
-		};
-
-		return execute(initialState);
+		return show(initialState);
 	}
 
-	public function execute(currentState:ItemState):js.lib.Promise<ItemState> {
+	override public function show(currentState:ItemState):js.lib.Promise<ItemState> {
+		return new js.lib.Promise((resolve, reject) -> {
+			if (props.timezones_list.length == 0)
+				timezoneIndex = -1;
+
+			if (timer == null) {
+				timer = new haxe.Timer(props.update_interval * 60 * 1000);
+				timer.run = function() {
+					applyCurrentTimezone(currentState, server.updateClientState, server.log.error);
+				};
+			}
+
+			execute(currentState).then(outcome -> resolve(outcome.state)).catchError(reject);
+		});
+	}
+
+	override public function hide() {
+		if (timer != null) {
+			timer.stop();
+			timer = null;
+		}
+	}
+
+	public function execute(currentState:ItemState):js.lib.Promise<ActionOutcome> {
 		return new js.lib.Promise((resolve, reject) -> {
 			if (timezoneIndex == -1)
 				reject('No timezones defined');
 
-			applyCurrentTimezone(currentState, resolve, reject);
+			applyCurrentTimezone(currentState, (newState) -> resolve(new ActionOutcome({state: newState})), reject);
 		});
 	}
 
-	override public function onLongPress(currentState:ItemState):js.lib.Promise<ItemState> {
+	override public function onLongPress(currentState:ItemState):js.lib.Promise<ActionOutcome> {
 		return new js.lib.Promise((resolve, reject) -> {
 			if (timezoneIndex == -1)
 				reject('No timezones defined');
 
 			timezoneIndex = (timezoneIndex + 1) % props.timezones_list.length;
-			applyCurrentTimezone(currentState, resolve, reject);
+			applyCurrentTimezone(currentState, (newState) -> resolve(new ActionOutcome({state: newState})), reject);
 		});
 	}
 
