@@ -1,0 +1,22 @@
+[
+	{
+		"id": "action_description",
+		"text": "Show the time in the configured timezones."
+	},
+	{
+		"id": "prop_timezones_list",
+		"text": "A list with a name you want to see in the item and the [IANA timezone ID](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones) to show the time."
+	},
+	{
+		"id": "prop_update_interval",
+		"text": "Update interval in minutes."
+	},
+	{
+		"id": "no_timezone_defined",
+		"text": "No timezones defined."
+	},
+	{
+		"id": "iana_not_found",
+		"text": "Not found\\n[{0}]."
+	}
+]

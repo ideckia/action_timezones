@@ -1,0 +1,22 @@
+[
+	{
+		"id": "action_description",
+		"text": "Emandako ordu-eremuetako orduak erakusten ditu."
+	},
+	{
+		"id": "prop_timezones_list",
+		"text": "Item-ean ikusi nahi duzun izena eta dagokion [IANA ordu-eremuaren IDa](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones) zerrenda."
+	},
+	{
+		"id": "prop_update_interval",
+		"text": "Eguneratze maiztasuna minututan."
+	},
+	{
+		"id": "no_timezone_defined",
+		"text": "Ez da ordu-eremurik definitu."
+	},
+	{
+		"id": "iana_not_found",
+		"text": "Ez da aurkitu\\n[{0}]."
+	}
+]
