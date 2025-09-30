@@ -28,6 +28,12 @@ class Timezones extends IdeckiaAction {
 		return show(initialState);
 	}
 
+	override function deinit() {
+		if (timer != null)
+			timer.stop();
+		timer = null;
+	}
+
 	override public function show(currentState:ItemState):js.lib.Promise<ItemState> {
 		return new js.lib.Promise((resolve, reject) -> {
 			if (props.timezones_list.length == 0)
